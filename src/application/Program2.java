@@ -35,6 +35,22 @@ public class Program2 {
         departmentDao.insert(depNew);
         System.out.println("Department inserted: " + depNew);
 
+        System.out.println();
+        System.out.println("===TEST 4: department update===");
+        System.out.print("Enter id for update test: ");
+        int depUpdateId = scan.nextInt();
+        scan.nextLine();
+        depNew = departmentDao.findById(depUpdateId);
+        if (depNew == null) {
+            System.out.println("Department not found");
+        } else {
+            System.out.print("New Name for department update: ");
+            String depUpdateName = scan.nextLine();
+            depNew.setName(depUpdateName);
+            departmentDao.update(depNew);
+            System.out.println("Department updated: " + depNew);
+        }
+
         scan.close();
     }
 }

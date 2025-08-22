@@ -23,7 +23,7 @@ public class DepartmentDaoJDBC implements DepartmentDao {
     public void insert(Department obj) {
         PreparedStatement preparedStatement = null;
 
-        try{
+        try {
             preparedStatement = connection.prepareStatement("INSERT INTO department (Name) VALUES (?)",
                     Statement.RETURN_GENERATED_KEYS);
 
@@ -48,7 +48,20 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 
     @Override
     public void update(Department obj) {
+        PreparedStatement preparedStatement = null;
 
+        try {
+            preparedStatement = connection.prepareStatement("UPDATE department SET Name = ? WHERE Id = ?");
+
+            preparedStatement.setString(1, obj.getName());
+            preparedStatement.setInt(2, obj.getId());
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        } finally {
+            DB.closeStatement(preparedStatement);
+        }
     }
 
     @Override
@@ -64,12 +77,12 @@ public class DepartmentDaoJDBC implements DepartmentDao {
         try {
             preparedStatement = connection.prepareStatement(
                     "SELECT department.Id AS DepartmentId,department.Name as DepName "
-                    + "FROM department "
-                    + "WHERE department.Id = ?");
+                            + "FROM department "
+                            + "WHERE department.Id = ?");
 
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()) {
+            if (resultSet.next()) {
                 Department dep = instantiateDepartment(resultSet);
                 return dep;
             }
