@@ -51,6 +51,12 @@ public class Program2 {
             System.out.println("Department updated: " + depNew);
         }
 
+        System.out.println();
+        System.out.println("===TEST 5: department delete===");
+        System.out.print("Enter id for delete test: ");
+        id = scan.nextInt();
+        departmentDao.deleteById(id);
+
         scan.close();
     }
 }
