@@ -38,18 +38,18 @@ public class SellerDaoJDBC implements SellerDao {
             preparedStatement.setInt(5, obj.getDepartment().getId());
 
             int rowsAffected = preparedStatement.executeUpdate();
-            if(rowsAffected > 0){
+            if (rowsAffected > 0) {
                 ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-                if(generatedKeys.next()){
+                if (generatedKeys.next()) {
                     int id = generatedKeys.getInt(1);
                     obj.setId(id);
                 }
                 DB.closeResultSet(generatedKeys);
-            } else{
-                throw  new DbException("Unexpected error: No rows affected!");
+            } else {
+                throw new DbException("Unexpected error: No rows affected!");
             }
 
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new DbException(e.getMessage());
         } finally {
             DB.closeStatement(preparedStatement);
@@ -58,7 +58,27 @@ public class SellerDaoJDBC implements SellerDao {
 
     @Override
     public void update(Seller obj) {
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement(
+                    "UPDATE seller "
+                            + "SET Name = ?, Email = ?, BirthDate = ?, BaseSalary = ?, DepartmentId = ? "
+                            + "WHERE Id = ?");
 
+            preparedStatement.setString(1, obj.getName());
+            preparedStatement.setString(2, obj.getEmail());
+            preparedStatement.setDate(3, new java.sql.Date(obj.getBirthDate().getTime()));
+            preparedStatement.setDouble(4, obj.getBaseSalary());
+            preparedStatement.setInt(5, obj.getDepartment().getId());
+            preparedStatement.setInt(6, obj.getId());
+
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        } finally {
+            DB.closeStatement(preparedStatement);
+        }
     }
 
     @Override
